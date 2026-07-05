@@ -1,27 +1,48 @@
-exports.handler = async (event) => { 
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
+const { randomUUID } = require("crypto");
 
-   const claims = 
+const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const TABLE = "Files";
 
-   event.requestContext.authorizer.claims; 
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type,Authorization,x-api-key",
+  "Content-Type": "application/json",
+};
 
-   const ownerId = claims.sub; 
+exports.handler = async (event) => {
+  try {
+    const body = JSON.parse(event.body || "{}");
+    const { fileName, category, size } = body;
 
-   const email = claims.email; 
+    if (!fileName || !category || !size) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ message: "fileName, category y size son obligatorios" }),
+      };
+    }
 
-   return { 
+    const item = {
+      fileId: randomUUID(),
+      fileName,
+      category,
+      size: Number(size),
+    };
 
-       statusCode: 200, 
+    await client.send(new PutCommand({ TableName: TABLE, Item: item }));
 
-       body: JSON.stringify({ 
-
-           message: "Archivo creado", 
-
-           ownerId, 
-
-           email 
-
-       }) 
-
-   }; 
-
-}; 
+    return {
+      statusCode: 201,
+      headers,
+      body: JSON.stringify(item),
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ message: error.message }),
+    };
+  }
+};

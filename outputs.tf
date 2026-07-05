@@ -14,6 +14,27 @@ output "region" {
   value = var.aws_region
 }
 
+output "api_key" {
+  value     = module.apigateway.api_key
+  sensitive = true
+}
+
 output "dynamodb_table" {
   value = "Files"
+}
+
+output "frontend_url" {
+  value = module.frontend.frontend_url
+}
+
+output "bucket_name" {
+  value = module.frontend.bucket_name
+}
+
+output "cloudfront_domain" {
+  value = module.frontend.cloudfront_domain
+}
+
+output "env_file" {
+  value = module.frontend.env_file
 }

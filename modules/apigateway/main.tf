@@ -307,12 +307,26 @@ resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
 resource "aws_api_gateway_deployment" "deployment" {
   rest_api_id = aws_api_gateway_rest_api.files_api.id
 
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_integration.create_file.id,
+      aws_api_gateway_integration.get_files.id,
+      aws_api_gateway_integration.get_file_by_id.id,
+      aws_api_gateway_integration.update_file.id,
+      aws_api_gateway_integration.delete_file.id,
+      aws_api_gateway_integration.options_files.id,
+      aws_api_gateway_integration.options_file_id.id,
+    ]))
+  }
+
   depends_on = [
     aws_api_gateway_integration.create_file,
     aws_api_gateway_integration.get_files,
     aws_api_gateway_integration.get_file_by_id,
     aws_api_gateway_integration.update_file,
-    aws_api_gateway_integration.delete_file
+    aws_api_gateway_integration.delete_file,
+    aws_api_gateway_integration.options_files,
+    aws_api_gateway_integration.options_file_id
   ]
 
   lifecycle {

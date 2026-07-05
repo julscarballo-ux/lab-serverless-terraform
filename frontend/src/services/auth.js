@@ -11,3 +11,15 @@ export function isAuthenticated(){
   return !!token; 
 
 } 
+
+function logout(){ 
+
+ 
+
+  localStorage.clear(); 
+
+ 
+
+  window.location.reload(); 
+
+} 
