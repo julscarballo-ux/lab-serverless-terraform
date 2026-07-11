@@ -54,3 +54,7 @@ output "documents_queue_url" {
 output "documents_queue_arn" {
   value = aws_sqs_queue.documents_queue.arn
 }
+
+output "consumer_function_name" {
+  value = aws_lambda_function.consumer.function_name
+}

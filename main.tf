@@ -11,8 +11,9 @@ module "cognito" {
 }
 
 module "iam" {
-  source        = "./modules/iam"
-  sqs_queue_arn = aws_sqs_queue.documents_queue.arn
+  source             = "./modules/iam"
+  sqs_queue_arn      = aws_sqs_queue.documents_queue.arn
+  dynamodb_table_arn = module.dynamodb.table_arn
 }
 
 module "lambda" {

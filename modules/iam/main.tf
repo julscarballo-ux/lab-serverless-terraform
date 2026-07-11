@@ -100,3 +100,41 @@ resource "aws_iam_role_policy" "producer_sqs_policy" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "consumer_dynamodb_policy" {
+  name = "consumer-dynamodb-policy"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:PutItem"
+        ]
+        Resource = var.dynamodb_table_arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "consumer_sqs_policy" {
+  name = "consumer-sqs-policy"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes"
+        ]
+        Resource = var.sqs_queue_arn
+      }
+    ]
+  })
+}
