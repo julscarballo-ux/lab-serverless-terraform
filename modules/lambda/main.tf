@@ -19,6 +19,13 @@ resource "aws_lambda_function" "create_file" {
  
  role = var.lambda_role_arn 
 
+ environment {
+  variables = {
+    QUEUE_URL = var.queue_url
+  }
+  }
+
+
 } 
 
 data "archive_file" "get_file_by_id_zip" {
@@ -40,6 +47,8 @@ resource "aws_lambda_function" "get_file_by_id" {
     handler = "index.handler"
 
     role = var.lambda_role_arn
+
+
 
 }
 
@@ -64,6 +73,7 @@ resource "aws_lambda_function" "update_file" {
 
     role = var.lambda_role_arn
 
+
 }
 
 
@@ -86,6 +96,8 @@ resource "aws_lambda_function" "delete_file" {
     handler = "index.handler"
 
     role = var.lambda_role_arn
+    
+
 
 }
 
@@ -108,4 +120,6 @@ resource "aws_lambda_function" "get_files" {
     handler = "index.handler"
 
     role = var.lambda_role_arn
+
 }
+

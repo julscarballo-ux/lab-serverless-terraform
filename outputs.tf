@@ -46,3 +46,11 @@ output "deployment_information" {
     cloudfront = module.frontend.cloudfront_domain
   }
 }
+
+output "documents_queue_url" {
+  value = aws_sqs_queue.documents_queue.id
+}
+
+output "documents_queue_arn" {
+  value = aws_sqs_queue.documents_queue.arn
+}

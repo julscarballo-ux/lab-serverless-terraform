@@ -11,15 +11,15 @@ module "cognito" {
 }
 
 module "iam" {
-
-  source = "./modules/iam"
-
+  source        = "./modules/iam"
+  sqs_queue_arn = aws_sqs_queue.documents_queue.arn
 }
 
 module "lambda" {
   source = "./modules/lambda"
 
   lambda_role_arn = module.iam.lambda_role_arn
+  queue_url       = aws_sqs_queue.documents_queue.id
 }
 
 module "apigateway" {
@@ -50,3 +50,7 @@ module "frontend" {
   client_id    = var.client_id
   api_key      = module.apigateway.api_key
 }
+
+
+
+
