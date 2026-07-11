@@ -38,3 +38,11 @@ output "cloudfront_domain" {
 output "env_file" {
   value = module.frontend.env_file
 }
+
+output "deployment_information" {
+  value = {
+    frontend   = module.frontend.frontend_url
+    bucket     = module.frontend.bucket_name
+    cloudfront = module.frontend.cloudfront_domain
+  }
+}
