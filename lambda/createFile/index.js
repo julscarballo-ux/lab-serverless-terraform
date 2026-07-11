@@ -1,9 +1,7 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
-const { randomUUID } = require("crypto");
+const { SQSClient, SendMessageCommand } = require("@aws-sdk/client-sqs");
 
-const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
-const TABLE = "Files";
+const sqs = new SQSClient({});
+const QUEUE_URL = process.env.QUEUE_URL;
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -14,29 +12,20 @@ const headers = {
 exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || "{}");
-    const { fileName, category, size } = body;
 
-    if (!fileName || !category || !size) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ message: "fileName, category y size son obligatorios" }),
-      };
-    }
-
-    const item = {
-      fileId: randomUUID(),
-      fileName,
-      category,
-      size: Number(size),
-    };
-
-    await client.send(new PutCommand({ TableName: TABLE, Item: item }));
+    await sqs.send(
+      new SendMessageCommand({
+        QueueUrl: QUEUE_URL,
+        MessageBody: JSON.stringify(body),
+      })
+    );
 
     return {
-      statusCode: 201,
+      statusCode: 200,
       headers,
-      body: JSON.stringify(item),
+      body: JSON.stringify({
+        message: "Message queued",
+      }),
     };
   } catch (error) {
     return {

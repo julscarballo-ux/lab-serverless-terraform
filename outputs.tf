@@ -38,3 +38,11 @@ output "cloudfront_domain" {
 output "env_file" {
   value = module.frontend.env_file
 }
+
+output "documents_queue_url" {
+  value = aws_sqs_queue.documents_queue.id
+}
+
+output "documents_queue_arn" {
+  value = aws_sqs_queue.documents_queue.arn
+}
